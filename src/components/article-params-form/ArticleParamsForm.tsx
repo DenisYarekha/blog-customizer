@@ -6,6 +6,7 @@ import { RadioGroup } from 'src/ui/radio-group';
 import { Text } from 'src/ui/text';
 import { Separator } from 'src/ui/separator';
 import styles from './ArticleParamsForm.module.scss';
+import { useOutsideClickClose } from 'src/ui/select/hooks/useOutsideClickClose';
 import {
 	ArticleStateType,
 	OptionType,
@@ -26,12 +27,12 @@ export const ArticleParamsForm = ({
 	currentState,
 	setCurrentState,
 }: ArticleParamsFormProps) => {
-	const [isOpen, setIsOpen] = useState(false);
+	const [isMenuOpen, setisMenuOpen] = useState(false);
 	const rootRef = useRef<HTMLDivElement>(null);
 	const [selectArticleState, setSelectArticleState] = useState(currentState);
 
 	const handleToggle = () => {
-		setIsOpen(!isOpen);
+		setisMenuOpen(!isMenuOpen);
 	};
 
 	const handleChange = (key: keyof ArticleStateType, value: OptionType) => {
@@ -43,13 +44,20 @@ export const ArticleParamsForm = ({
 		setCurrentState(selectArticleState);
 	};
 
+	useOutsideClickClose({
+		isOpen: isMenuOpen,
+		rootRef,
+		onClose: handleToggle,
+		onChange: setisMenuOpen,
+	});
+
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} onClick={handleToggle} />
+			<ArrowButton isOpen={isMenuOpen} onClick={handleToggle} />
 			<aside
 				ref={rootRef}
 				className={`${styles.container} ${
-					isOpen ? styles.container_open : ''
+					isMenuOpen ? styles.container_open : ''
 				}`}>
 				<form className={styles.form} onSubmit={handleSubmit}>
 					<Text size={45}>Задайте параметры</Text>
